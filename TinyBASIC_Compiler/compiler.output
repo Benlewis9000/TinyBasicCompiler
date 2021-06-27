@@ -1,0 +1,782 @@
+Nonterminals useless in grammar
+
+    var_list
+
+
+Terminals unused in grammar
+
+    INPUT
+
+
+Rules useless in grammar
+
+   37 var_list: var_list ',' var
+   38         | var
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: line_list END
+    2        | END
+
+    3 line_list: line_list line
+    4          | line
+
+    5 line: INTEGER statement CR
+    6     | statement CR
+    7     | CR
+
+    8 statement: PRINT expr_list
+    9          | IF expression relop expression THEN statement
+   10          | GOTO expression
+   11          | LET var EQ expression
+   12          | LET var EQ string
+
+   13 expr_list: expr_list ',' string
+   14          | expr_list ',' expression
+   15          | string
+   16          | expression
+
+   17 expression: expression '+' term
+   18           | expression '-' term
+   19           | '-' expression
+   20           | term
+
+   21 term: term '*' factor
+   22     | term '/' factor
+   23     | factor
+
+   24 factor: var
+   25       | number
+   26       | '(' expression ')'
+
+   27 string: STRING
+
+   28 var: VARIABLE
+
+   29 number: INTEGER
+   30       | DECIMAL
+
+   31 relop: EQ
+   32      | GT
+   33      | LT
+   34      | GE
+   35      | LE
+   36      | NE
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    '(' (40) 26
+    ')' (41) 26
+    '*' (42) 21
+    '+' (43) 17
+    ',' (44) 13 14
+    '-' (45) 18 19
+    '/' (47) 22
+    error (256)
+    INTEGER <integer> (258) 5 29
+    DECIMAL <decimal> (259) 30
+    STRING <str> (260) 27
+    VARIABLE <var> (261) 28
+    PRINT (262) 8
+    INPUT (263)
+    IF (264) 9
+    THEN (265) 9
+    GOTO (266) 10
+    LET (267) 11 12
+    CR (268) 5 6 7
+    END (269) 1 2
+    EQ (270) 11 12 31
+    GT (271) 32
+    LT (272) 33
+    GE (273) 34
+    LE (274) 35
+    NE (275) 36
+    UMINUS (276)
+
+
+Nonterminals, with rules where they appear
+
+    $accept (29)
+        on left: 0
+    program (30)
+        on left: 1 2
+        on right: 0
+    line_list (31)
+        on left: 3 4
+        on right: 1 3
+    line <node> (32)
+        on left: 5 6 7
+        on right: 3 4
+    statement <node> (33)
+        on left: 8 9 10 11 12
+        on right: 5 6 9
+    expr_list <node> (34)
+        on left: 13 14 15 16
+        on right: 8 13 14
+    expression <node> (35)
+        on left: 17 18 19 20
+        on right: 9 10 11 14 16 17 18 19 26
+    term <node> (36)
+        on left: 21 22 23
+        on right: 17 18 20 21 22
+    factor <node> (37)
+        on left: 24 25 26
+        on right: 21 22 23
+    string <node> (38)
+        on left: 27
+        on right: 12 13 15
+    var <node> (39)
+        on left: 28
+        on right: 11 12 24
+    number <node> (40)
+        on left: 29 30
+        on right: 25
+    relop <node> (41)
+        on left: 31 32 33 34 35 36
+        on right: 9
+
+
+State 0
+
+    0 $accept: . program $end
+
+    INTEGER  shift, and go to state 1
+    PRINT    shift, and go to state 2
+    IF       shift, and go to state 3
+    GOTO     shift, and go to state 4
+    LET      shift, and go to state 5
+    CR       shift, and go to state 6
+    END      shift, and go to state 7
+
+    program    go to state 8
+    line_list  go to state 9
+    line       go to state 10
+    statement  go to state 11
+
+
+State 1
+
+    5 line: INTEGER . statement CR
+
+    PRINT  shift, and go to state 2
+    IF     shift, and go to state 3
+    GOTO   shift, and go to state 4
+    LET    shift, and go to state 5
+
+    statement  go to state 12
+
+
+State 2
+
+    8 statement: PRINT . expr_list
+
+    INTEGER   shift, and go to state 13
+    DECIMAL   shift, and go to state 14
+    STRING    shift, and go to state 15
+    VARIABLE  shift, and go to state 16
+    '-'       shift, and go to state 17
+    '('       shift, and go to state 18
+
+    expr_list   go to state 19
+    expression  go to state 20
+    term        go to state 21
+    factor      go to state 22
+    string      go to state 23
+    var         go to state 24
+    number      go to state 25
+
+
+State 3
+
+    9 statement: IF . expression relop expression THEN statement
+
+    INTEGER   shift, and go to state 13
+    DECIMAL   shift, and go to state 14
+    VARIABLE  shift, and go to state 16
+    '-'       shift, and go to state 17
+    '('       shift, and go to state 18
+
+    expression  go to state 26
+    term        go to state 21
+    factor      go to state 22
+    var         go to state 24
+    number      go to state 25
+
+
+State 4
+
+   10 statement: GOTO . expression
+
+    INTEGER   shift, and go to state 13
+    DECIMAL   shift, and go to state 14
+    VARIABLE  shift, and go to state 16
+    '-'       shift, and go to state 17
+    '('       shift, and go to state 18
+
+    expression  go to state 27
+    term        go to state 21
+    factor      go to state 22
+    var         go to state 24
+    number      go to state 25
+
+
+State 5
+
+   11 statement: LET . var EQ expression
+   12          | LET . var EQ string
+
+    VARIABLE  shift, and go to state 16
+
+    var  go to state 28
+
+
+State 6
+
+    7 line: CR .
+
+    $default  reduce using rule 7 (line)
+
+
+State 7
+
+    2 program: END .
+
+    $default  reduce using rule 2 (program)
+
+
+State 8
+
+    0 $accept: program . $end
+
+    $end  shift, and go to state 29
+
+
+State 9
+
+    1 program: line_list . END
+    3 line_list: line_list . line
+
+    INTEGER  shift, and go to state 1
+    PRINT    shift, and go to state 2
+    IF       shift, and go to state 3
+    GOTO     shift, and go to state 4
+    LET      shift, and go to state 5
+    CR       shift, and go to state 6
+    END      shift, and go to state 30
+
+    line       go to state 31
+    statement  go to state 11
+
+
+State 10
+
+    4 line_list: line .
+
+    $default  reduce using rule 4 (line_list)
+
+
+State 11
+
+    6 line: statement . CR
+
+    CR  shift, and go to state 32
+
+
+State 12
+
+    5 line: INTEGER statement . CR
+
+    CR  shift, and go to state 33
+
+
+State 13
+
+   29 number: INTEGER .
+
+    $default  reduce using rule 29 (number)
+
+
+State 14
+
+   30 number: DECIMAL .
+
+    $default  reduce using rule 30 (number)
+
+
+State 15
+
+   27 string: STRING .
+
+    $default  reduce using rule 27 (string)
+
+
+State 16
+
+   28 var: VARIABLE .
+
+    $default  reduce using rule 28 (var)
+
+
+State 17
+
+   19 expression: '-' . expression
+
+    INTEGER   shift, and go to state 13
+    DECIMAL   shift, and go to state 14
+    VARIABLE  shift, and go to state 16
+    '-'       shift, and go to state 17
+    '('       shift, and go to state 18
+
+    expression  go to state 34
+    term        go to state 21
+    factor      go to state 22
+    var         go to state 24
+    number      go to state 25
+
+
+State 18
+
+   26 factor: '(' . expression ')'
+
+    INTEGER   shift, and go to state 13
+    DECIMAL   shift, and go to state 14
+    VARIABLE  shift, and go to state 16
+    '-'       shift, and go to state 17
+    '('       shift, and go to state 18
+
+    expression  go to state 35
+    term        go to state 21
+    factor      go to state 22
+    var         go to state 24
+    number      go to state 25
+
+
+State 19
+
+    8 statement: PRINT expr_list .
+   13 expr_list: expr_list . ',' string
+   14          | expr_list . ',' expression
+
+    ','  shift, and go to state 36
+
+    $default  reduce using rule 8 (statement)
+
+
+State 20
+
+   16 expr_list: expression .
+   17 expression: expression . '+' term
+   18           | expression . '-' term
+
+    '+'  shift, and go to state 37
+    '-'  shift, and go to state 38
+
+    $default  reduce using rule 16 (expr_list)
+
+
+State 21
+
+   20 expression: term .
+   21 term: term . '*' factor
+   22     | term . '/' factor
+
+    '/'  shift, and go to state 39
+    '*'  shift, and go to state 40
+
+    $default  reduce using rule 20 (expression)
+
+
+State 22
+
+   23 term: factor .
+
+    $default  reduce using rule 23 (term)
+
+
+State 23
+
+   15 expr_list: string .
+
+    $default  reduce using rule 15 (expr_list)
+
+
+State 24
+
+   24 factor: var .
+
+    $default  reduce using rule 24 (factor)
+
+
+State 25
+
+   25 factor: number .
+
+    $default  reduce using rule 25 (factor)
+
+
+State 26
+
+    9 statement: IF expression . relop expression THEN statement
+   17 expression: expression . '+' term
+   18           | expression . '-' term
+
+    '+'  shift, and go to state 37
+    '-'  shift, and go to state 38
+    EQ   shift, and go to state 41
+    GT   shift, and go to state 42
+    LT   shift, and go to state 43
+    GE   shift, and go to state 44
+    LE   shift, and go to state 45
+    NE   shift, and go to state 46
+
+    relop  go to state 47
+
+
+State 27
+
+   10 statement: GOTO expression .
+   17 expression: expression . '+' term
+   18           | expression . '-' term
+
+    '+'  shift, and go to state 37
+    '-'  shift, and go to state 38
+
+    $default  reduce using rule 10 (statement)
+
+
+State 28
+
+   11 statement: LET var . EQ expression
+   12          | LET var . EQ string
+
+    EQ  shift, and go to state 48
+
+
+State 29
+
+    0 $accept: program $end .
+
+    $default  accept
+
+
+State 30
+
+    1 program: line_list END .
+
+    $default  reduce using rule 1 (program)
+
+
+State 31
+
+    3 line_list: line_list line .
+
+    $default  reduce using rule 3 (line_list)
+
+
+State 32
+
+    6 line: statement CR .
+
+    $default  reduce using rule 6 (line)
+
+
+State 33
+
+    5 line: INTEGER statement CR .
+
+    $default  reduce using rule 5 (line)
+
+
+State 34
+
+   17 expression: expression . '+' term
+   18           | expression . '-' term
+   19           | '-' expression .
+
+    $default  reduce using rule 19 (expression)
+
+
+State 35
+
+   17 expression: expression . '+' term
+   18           | expression . '-' term
+   26 factor: '(' expression . ')'
+
+    '+'  shift, and go to state 37
+    '-'  shift, and go to state 38
+    ')'  shift, and go to state 49
+
+
+State 36
+
+   13 expr_list: expr_list ',' . string
+   14          | expr_list ',' . expression
+
+    INTEGER   shift, and go to state 13
+    DECIMAL   shift, and go to state 14
+    STRING    shift, and go to state 15
+    VARIABLE  shift, and go to state 16
+    '-'       shift, and go to state 17
+    '('       shift, and go to state 18
+
+    expression  go to state 50
+    term        go to state 21
+    factor      go to state 22
+    string      go to state 51
+    var         go to state 24
+    number      go to state 25
+
+
+State 37
+
+   17 expression: expression '+' . term
+
+    INTEGER   shift, and go to state 13
+    DECIMAL   shift, and go to state 14
+    VARIABLE  shift, and go to state 16
+    '('       shift, and go to state 18
+
+    term    go to state 52
+    factor  go to state 22
+    var     go to state 24
+    number  go to state 25
+
+
+State 38
+
+   18 expression: expression '-' . term
+
+    INTEGER   shift, and go to state 13
+    DECIMAL   shift, and go to state 14
+    VARIABLE  shift, and go to state 16
+    '('       shift, and go to state 18
+
+    term    go to state 53
+    factor  go to state 22
+    var     go to state 24
+    number  go to state 25
+
+
+State 39
+
+   22 term: term '/' . factor
+
+    INTEGER   shift, and go to state 13
+    DECIMAL   shift, and go to state 14
+    VARIABLE  shift, and go to state 16
+    '('       shift, and go to state 18
+
+    factor  go to state 54
+    var     go to state 24
+    number  go to state 25
+
+
+State 40
+
+   21 term: term '*' . factor
+
+    INTEGER   shift, and go to state 13
+    DECIMAL   shift, and go to state 14
+    VARIABLE  shift, and go to state 16
+    '('       shift, and go to state 18
+
+    factor  go to state 55
+    var     go to state 24
+    number  go to state 25
+
+
+State 41
+
+   31 relop: EQ .
+
+    $default  reduce using rule 31 (relop)
+
+
+State 42
+
+   32 relop: GT .
+
+    $default  reduce using rule 32 (relop)
+
+
+State 43
+
+   33 relop: LT .
+
+    $default  reduce using rule 33 (relop)
+
+
+State 44
+
+   34 relop: GE .
+
+    $default  reduce using rule 34 (relop)
+
+
+State 45
+
+   35 relop: LE .
+
+    $default  reduce using rule 35 (relop)
+
+
+State 46
+
+   36 relop: NE .
+
+    $default  reduce using rule 36 (relop)
+
+
+State 47
+
+    9 statement: IF expression relop . expression THEN statement
+
+    INTEGER   shift, and go to state 13
+    DECIMAL   shift, and go to state 14
+    VARIABLE  shift, and go to state 16
+    '-'       shift, and go to state 17
+    '('       shift, and go to state 18
+
+    expression  go to state 56
+    term        go to state 21
+    factor      go to state 22
+    var         go to state 24
+    number      go to state 25
+
+
+State 48
+
+   11 statement: LET var EQ . expression
+   12          | LET var EQ . string
+
+    INTEGER   shift, and go to state 13
+    DECIMAL   shift, and go to state 14
+    STRING    shift, and go to state 15
+    VARIABLE  shift, and go to state 16
+    '-'       shift, and go to state 17
+    '('       shift, and go to state 18
+
+    expression  go to state 57
+    term        go to state 21
+    factor      go to state 22
+    string      go to state 58
+    var         go to state 24
+    number      go to state 25
+
+
+State 49
+
+   26 factor: '(' expression ')' .
+
+    $default  reduce using rule 26 (factor)
+
+
+State 50
+
+   14 expr_list: expr_list ',' expression .
+   17 expression: expression . '+' term
+   18           | expression . '-' term
+
+    '+'  shift, and go to state 37
+    '-'  shift, and go to state 38
+
+    $default  reduce using rule 14 (expr_list)
+
+
+State 51
+
+   13 expr_list: expr_list ',' string .
+
+    $default  reduce using rule 13 (expr_list)
+
+
+State 52
+
+   17 expression: expression '+' term .
+   21 term: term . '*' factor
+   22     | term . '/' factor
+
+    '/'  shift, and go to state 39
+    '*'  shift, and go to state 40
+
+    $default  reduce using rule 17 (expression)
+
+
+State 53
+
+   18 expression: expression '-' term .
+   21 term: term . '*' factor
+   22     | term . '/' factor
+
+    '/'  shift, and go to state 39
+    '*'  shift, and go to state 40
+
+    $default  reduce using rule 18 (expression)
+
+
+State 54
+
+   22 term: term '/' factor .
+
+    $default  reduce using rule 22 (term)
+
+
+State 55
+
+   21 term: term '*' factor .
+
+    $default  reduce using rule 21 (term)
+
+
+State 56
+
+    9 statement: IF expression relop expression . THEN statement
+   17 expression: expression . '+' term
+   18           | expression . '-' term
+
+    THEN  shift, and go to state 59
+    '+'   shift, and go to state 37
+    '-'   shift, and go to state 38
+
+
+State 57
+
+   11 statement: LET var EQ expression .
+   17 expression: expression . '+' term
+   18           | expression . '-' term
+
+    '+'  shift, and go to state 37
+    '-'  shift, and go to state 38
+
+    $default  reduce using rule 11 (statement)
+
+
+State 58
+
+   12 statement: LET var EQ string .
+
+    $default  reduce using rule 12 (statement)
+
+
+State 59
+
+    9 statement: IF expression relop expression THEN . statement
+
+    PRINT  shift, and go to state 2
+    IF     shift, and go to state 3
+    GOTO   shift, and go to state 4
+    LET    shift, and go to state 5
+
+    statement  go to state 60
+
+
+State 60
+
+    9 statement: IF expression relop expression THEN statement .
+
+    $default  reduce using rule 9 (statement)

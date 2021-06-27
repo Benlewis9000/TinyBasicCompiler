@@ -1,0 +1,3 @@
+LET x = a
+PRINT x
+END
