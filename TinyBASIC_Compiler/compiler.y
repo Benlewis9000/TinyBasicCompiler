@@ -1,4 +1,4 @@
-%error-verbose
+%define parse.error verbose
 
 %{
 extern "C" {
@@ -29,13 +29,13 @@ FILE* out;
 };
 
 %token <integer> INTEGER;
-%token <decimal> DECIMAL;
+%token <decimal> T_DECIMAL;
 %token <str> STRING;
 %token <var> VARIABLE;
 
 %type <node> relop number string var factor term expression var_list expr_list statement line
 
-%token PRINT INPUT IF THEN GOTO LET CR END
+%token PRINT IF THEN GOTO LET CR END
 
 %left '/' '*'
 %left '+' '-'
@@ -113,7 +113,7 @@ var:
 
 number:
 	INTEGER		{ $$ = n_int($1); }
-	| DECIMAL	{ $$ = n_float($1); }
+	| T_DECIMAL	{ $$ = n_float($1); }
 	;
 
 relop:
@@ -152,7 +152,7 @@ int main(int argc, char **argv){
 	fprintf(out, "#include <stdlib.h>\n#include <stdio.h>\n#include <string.h>\nint main(){\n");
 	// Specify debug modes
 	yy_flex_debug = 0;
-	yydebug = 0;
+	//yydebug = 0;
 	yyparse();
 	return 0;
 }

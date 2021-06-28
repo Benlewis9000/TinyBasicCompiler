@@ -1,3 +1,3 @@
-LET x = a
+LET x = 10
 PRINT x
 END

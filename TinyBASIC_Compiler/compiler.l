@@ -25,7 +25,7 @@ ch		[a-zA-Z]
 						}
 {digit}+.{digit}+		{
 							yylval.decimal = atof(yytext);
-							return DECIMAL;
+                            return T_DECIMAL;
 						}
 [-+*/(),]				{
 							return *yytext;
@@ -41,7 +41,6 @@ ch		[a-zA-Z]
 (IF)					{	return IF; }
 (THEN)					{	return THEN; }
 (GOTO)					{	return GOTO; }
-(INPUT)					{	return INPUT; }
 (LET)					{	return LET; }
 (END)					{	return END; }
 (\")					{ BEGIN SSTRING; s = buff; 

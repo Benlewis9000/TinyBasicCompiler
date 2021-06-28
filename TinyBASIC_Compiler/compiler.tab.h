@@ -39,7 +39,7 @@
 # define YY_YY_COMPILER_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 1
+# define YYDEBUG 0
 #endif
 #if YYDEBUG
 extern int yydebug;
@@ -55,24 +55,23 @@ extern int yydebug;
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
     INTEGER = 258,                 /* INTEGER  */
-    DECIMAL = 259,                 /* DECIMAL  */
+    T_DECIMAL = 259,               /* T_DECIMAL  */
     STRING = 260,                  /* STRING  */
     VARIABLE = 261,                /* VARIABLE  */
     PRINT = 262,                   /* PRINT  */
-    INPUT = 263,                   /* INPUT  */
-    IF = 264,                      /* IF  */
-    THEN = 265,                    /* THEN  */
-    GOTO = 266,                    /* GOTO  */
-    LET = 267,                     /* LET  */
-    CR = 268,                      /* CR  */
-    END = 269,                     /* END  */
-    EQ = 270,                      /* EQ  */
-    GT = 271,                      /* GT  */
-    LT = 272,                      /* LT  */
-    GE = 273,                      /* GE  */
-    LE = 274,                      /* LE  */
-    NE = 275,                      /* NE  */
-    UMINUS = 276                   /* UMINUS  */
+    IF = 263,                      /* IF  */
+    THEN = 264,                    /* THEN  */
+    GOTO = 265,                    /* GOTO  */
+    LET = 266,                     /* LET  */
+    CR = 267,                      /* CR  */
+    END = 268,                     /* END  */
+    EQ = 269,                      /* EQ  */
+    GT = 270,                      /* GT  */
+    LT = 271,                      /* LT  */
+    GE = 272,                      /* GE  */
+    LE = 273,                      /* LE  */
+    NE = 274,                      /* NE  */
+    UMINUS = 275                   /* UMINUS  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -89,7 +88,7 @@ union YYSTYPE
 	char* str;
 	struct NodeWrapper* node;
 
-#line 93 "compiler.tab.h"
+#line 92 "compiler.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
