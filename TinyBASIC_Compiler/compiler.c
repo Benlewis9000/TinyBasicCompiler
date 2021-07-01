@@ -28,13 +28,13 @@ void trans_printf(FILE*out, SymTable* table, NodeWrapper* node){
 	// Check raw value node eventually leads to, not nodes actual value
 	switch(raw){
 		case RawInt:
-			fprintf(out, "\tprintf(\"%cd\\n\", (int)", '%');
+			fprintf(out, "\tprintf(\"%cd\", (int)", '%');
 			break;
 		case RawFloat:
-			fprintf(out, "\tprintf(\"%cf\\n\", (double)", '%');
+			fprintf(out, "\tprintf(\"%cf\", (double)", '%');
 			break;
 		case RawStr:
-			fprintf(out, "\tprintf(\"%cs\\n\", ", '%');
+			fprintf(out, "\tprintf(\"%cs\", ", '%');
 			break;
 		default:
 			// Do not printf if no value deduced
@@ -78,7 +78,13 @@ void trans(FILE* out, SymTable* table, NodeWrapper* node, int line){
 			fprintf(out, "%s", node->v_str);
 			break;
 		case NodeVar:
-			fprintf(out, "%s", node->v_var);
+			// If var is not in symbol table, report error
+			if (!symtbl_get(table, node->v_var)){
+				yyerror("Variable not found.");
+				return;
+			}
+			// Prepend "_" to avoid collisions with reserved C keywords
+			fprintf(out, "_%s", node->v_var);
 			break;
 		case NodeOp:
 			switch(node->v_op.oper){
@@ -133,6 +139,8 @@ void trans(FILE* out, SymTable* table, NodeWrapper* node, int line){
 					fprintf(out, ";\n");
 					break;
 				case LET:
+					// Update variable nodes raw type
+					node->v_op.operands[0]->raw = node->v_op.operands[1]->raw;
 					// If var not in sym table, unused, therefore need to declare type
 					if(!symtbl_get(table, node->v_op.operands[0]->v_var)){
 						switch(node->v_op.operands[1]->raw){
@@ -165,6 +173,7 @@ void trans(FILE* out, SymTable* table, NodeWrapper* node, int line){
 					break;
 				// Arithmetics
 				case UMINUS:
+					// Negate number
 					fprintf(out, " - ");
 					trans(out, table, node->v_op.operands[0], -1);
 					break;
@@ -217,4 +226,5 @@ void trans(FILE* out, SymTable* table, NodeWrapper* node, int line){
 			break;
 			
 	}
+
 }

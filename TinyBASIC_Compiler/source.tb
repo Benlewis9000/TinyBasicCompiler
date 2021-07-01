@@ -1,3 +1,11 @@
-LET x = 10
-PRINT x
+LET f = 0.5
+LET i = 1 + f
+LET x = f + 3 * f + f/2
+LET int1 = 42
+LET int2 = 36
+LET int3 = int1 + int2
+PRINT int3, "\n"
+PRINT int3 / 10, "\n"
+PRINT int3, "\n"
+PRINT i, ", ", x
 END

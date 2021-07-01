@@ -1,5 +1,3 @@
-#pragma once
-
 #include "sym_table.h"
 
 Symbol* symbol_create(char* id, NodeWrapper* node){
@@ -75,7 +73,7 @@ void symtbl_push(SymTable* symtbl, Symbol* symbol){
 }
 
 void symtbl_push_node(SymTable* symtbl, char* id, NodeWrapper* node){
-	// If id already in table, simply update node to point to
+	// If id already in table, point sym to existing node
 	Symbol* sym = symtbl_get(symtbl, id);
 	if (sym){
 		sym->node = node;

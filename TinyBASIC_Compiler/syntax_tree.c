@@ -36,16 +36,23 @@ NodeWrapper* n_str(char* val){
 }
 
 // WARNING: Does NOT create a symbol, only a reference to a symbol in the syntax tree
-NodeWrapper* n_var(char* id){
+//NodeWrapper* n_var(char* id){
+NodeWrapper* n_var(SymTable* table, char* id){
 	NodeWrapper* node = n_create();
 	node->type = NodeVar;
+
+	// If symbol of same ID exists, copy raw value TODO removed because this assumes user as assigning same type to the var, not garuanteed
+	/*Symbol* existing = symtbl_get(table, id);
+	if (existing) node->raw = existing->node->raw;*/
+
 	node->raw = RawUnknown;
 	node->v_var = malloc( (strlen(id)+1) * sizeof(char));
 	strcpy(node->v_var, id);
 	return node;
 }
 
-NodeWrapper* n_op(int oper, int nops, ...){
+//NodeWrapper* n_op(int oper, int nops, ...){
+NodeWrapper* n_op(SymTable* table, int oper, int nops, ...){
 	NodeWrapper* node = n_create();
 	node->type = NodeOp;
 	node->v_op.oper = oper;
@@ -60,7 +67,22 @@ NodeWrapper* n_op(int oper, int nops, ...){
 	// Division op requires float
 	if (oper == '/') raw = RawFloat;
 	for (int i = 0; i < nops; i++){
+		// Assign operand
 		node->v_op.operands[i] = va_arg(args, NodeWrapper*);
+		
+		// If operand is a var
+		if (node->v_op.operands[i]->type == NodeVar){
+			// If var in symbol table
+			struct Symbol* sym = symtbl_get(table, node->v_op.operands[i]->v_var);
+			if (sym){
+				// Set var nodes raw to that found in table
+				node->v_op.operands[i]->raw = sym->node->raw;
+				// If var is float, set raw to float
+				if (sym->node->raw == RawFloat) 
+					node->raw = RawFloat;
+			}
+		}
+		
 		// Any operand being a float requires the raw value is a float
 		if (node->v_op.operands[i]->raw == RawFloat) raw = RawFloat;
 	}

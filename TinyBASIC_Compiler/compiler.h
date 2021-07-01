@@ -1,7 +1,10 @@
 #pragma once
 
+#include <stdbool.h>
+#include <stdarg.h>
 #include "compiler.tab.h"
 #include "sym_table.h"
+#include "syntax_tree.h"
 
 extern void yyerror(const char*);
 

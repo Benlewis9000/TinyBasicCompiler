@@ -70,8 +70,10 @@
 #line 3 "compiler.y"
 
 extern "C" {
+	#include <errno.h>
 	#include "compiler.h"
 	#include "syntax_tree.h"
+	#include "sym_table.h"
 	int yylex();
 	int YYACCEPT();
 }
@@ -81,13 +83,13 @@ void yyerror(const char*);
 extern int yy_flex_debug;
 extern int yylineno;
 extern FILE* yyin;
-// Track lineno (increments by default, or can be set by input)
-int lineno = -1;
 // Output file for compiled code
 FILE* input;
 FILE* out;
+FILE* info;
+bool success = true;
 
-#line 91 "compiler.tab.cpp"
+#line 93 "compiler.tab.cpp"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -525,10 +527,10 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    48,    48,    49,    53,    54,    58,    61,    64,    68,
-      69,    70,    71,    72,    76,    77,    78,    79,    88,    89,
-      90,    91,    95,    96,    97,   101,   102,   103,   107,   111,
-     115,   116,   120,   121,   122,   123,   124,   125
+       0,    50,    50,    51,    55,    56,    60,    63,    66,    70,
+      71,    72,    73,    74,    78,    79,    80,    81,    90,    91,
+      92,    93,    97,    98,    99,   103,   104,   105,   109,   113,
+     117,   118,   122,   123,   124,   125,   126,   127
 };
 #endif
 
@@ -1414,215 +1416,215 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* program: line_list END  */
-#line 48 "compiler.y"
-                                                        { fprintf(out, "\treturn 0;\n}"); YYACCEPT; }
-#line 1420 "compiler.tab.cpp"
+#line 50 "compiler.y"
+                                                        { YYACCEPT; }
+#line 1422 "compiler.tab.cpp"
     break;
 
   case 3: /* program: END  */
-#line 49 "compiler.y"
-                                                                { fprintf(out, "\treturn 0;\n}"); YYACCEPT; }
-#line 1426 "compiler.tab.cpp"
+#line 51 "compiler.y"
+                                                                { YYACCEPT; }
+#line 1428 "compiler.tab.cpp"
     break;
 
   case 6: /* line: INTEGER statement CR  */
-#line 58 "compiler.y"
-                                                { lineno = (yyvsp[-2].integer);
-									 trans(out, table, (yyvsp[-1].node), lineno);
+#line 60 "compiler.y"
+                                                {
+									 trans(out, table, (yyvsp[-1].node), (yyvsp[-2].integer)); n_free((yyvsp[-1].node));
 									}
-#line 1434 "compiler.tab.cpp"
+#line 1436 "compiler.tab.cpp"
     break;
 
   case 7: /* line: statement CR  */
-#line 61 "compiler.y"
+#line 63 "compiler.y"
                                                         { 
-									 trans(out, table, (yyvsp[-1].node), -1);
+									 trans(out, table, (yyvsp[-1].node), -1);	n_free((yyvsp[-1].node));
 									}
-#line 1442 "compiler.tab.cpp"
+#line 1444 "compiler.tab.cpp"
     break;
 
   case 8: /* line: CR  */
-#line 64 "compiler.y"
+#line 66 "compiler.y"
                                                                 {}
-#line 1448 "compiler.tab.cpp"
+#line 1450 "compiler.tab.cpp"
     break;
 
   case 9: /* statement: PRINT expr_list  */
-#line 68 "compiler.y"
-                                                                                                { (yyval.node) = n_op(PRINT, 1, (yyvsp[0].node)); }
-#line 1454 "compiler.tab.cpp"
+#line 70 "compiler.y"
+                                                                                                { (yyval.node) = n_op(table, PRINT, 1, (yyvsp[0].node)); }
+#line 1456 "compiler.tab.cpp"
     break;
 
   case 10: /* statement: IF expression relop expression THEN statement  */
-#line 69 "compiler.y"
-                                                                { (yyval.node) = n_op(IF, 4, (yyvsp[-4].node), (yyvsp[-3].node), (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1460 "compiler.tab.cpp"
+#line 71 "compiler.y"
+                                                                { (yyval.node) = n_op(table, IF, 4, (yyvsp[-4].node), (yyvsp[-3].node), (yyvsp[-2].node), (yyvsp[0].node)); }
+#line 1462 "compiler.tab.cpp"
     break;
 
   case 11: /* statement: GOTO expression  */
-#line 70 "compiler.y"
-                                                                                                { (yyval.node) = n_op(GOTO, 1, (yyvsp[0].node)); }
-#line 1466 "compiler.tab.cpp"
+#line 72 "compiler.y"
+                                                                                                { (yyval.node) = n_op(table, GOTO, 1, (yyvsp[0].node)); }
+#line 1468 "compiler.tab.cpp"
     break;
 
   case 12: /* statement: LET var EQ expression  */
-#line 71 "compiler.y"
-                                                                                        { (yyval.node) = n_op(LET, 2, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1472 "compiler.tab.cpp"
+#line 73 "compiler.y"
+                                                                                        { (yyval.node) = n_op(table, LET, 2, (yyvsp[-2].node), (yyvsp[0].node)); }
+#line 1474 "compiler.tab.cpp"
     break;
 
   case 13: /* statement: LET var EQ string  */
-#line 72 "compiler.y"
-                                                                                                { (yyval.node) = n_op(LET, 2, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1478 "compiler.tab.cpp"
+#line 74 "compiler.y"
+                                                                                                { (yyval.node) = n_op(table, LET, 2, (yyvsp[-2].node), (yyvsp[0].node)); }
+#line 1480 "compiler.tab.cpp"
     break;
 
   case 14: /* expr_list: expr_list ',' string  */
-#line 76 "compiler.y"
-                                                { (yyval.node) = n_op('e', 2, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1484 "compiler.tab.cpp"
+#line 78 "compiler.y"
+                                                { (yyval.node) = n_op(table, 'e', 2, (yyvsp[-2].node), (yyvsp[0].node)); }
+#line 1486 "compiler.tab.cpp"
     break;
 
   case 15: /* expr_list: expr_list ',' expression  */
-#line 77 "compiler.y"
-                                                { (yyval.node) = n_op('e', 2, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1490 "compiler.tab.cpp"
+#line 79 "compiler.y"
+                                                { (yyval.node) = n_op(table, 'e', 2, (yyvsp[-2].node), (yyvsp[0].node)); }
+#line 1492 "compiler.tab.cpp"
     break;
 
   case 16: /* expr_list: string  */
-#line 78 "compiler.y"
+#line 80 "compiler.y"
                                                                 { (yyval.node) = (yyvsp[0].node); }
-#line 1496 "compiler.tab.cpp"
+#line 1498 "compiler.tab.cpp"
     break;
 
   case 17: /* expr_list: expression  */
-#line 79 "compiler.y"
+#line 81 "compiler.y"
                                                         { (yyval.node) = (yyvsp[0].node); }
-#line 1502 "compiler.tab.cpp"
+#line 1504 "compiler.tab.cpp"
     break;
 
   case 18: /* expression: expression '+' term  */
-#line 88 "compiler.y"
-                                                        { (yyval.node) = n_op('+', 2, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1508 "compiler.tab.cpp"
+#line 90 "compiler.y"
+                                                        { (yyval.node) = n_op(table, '+', 2, (yyvsp[-2].node), (yyvsp[0].node)); }
+#line 1510 "compiler.tab.cpp"
     break;
 
   case 19: /* expression: expression '-' term  */
-#line 89 "compiler.y"
-                                                { (yyval.node) = n_op('-', 2, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1514 "compiler.tab.cpp"
+#line 91 "compiler.y"
+                                                { (yyval.node) = n_op(table, '-', 2, (yyvsp[-2].node), (yyvsp[0].node)); }
+#line 1516 "compiler.tab.cpp"
     break;
 
   case 20: /* expression: '-' expression  */
-#line 90 "compiler.y"
-                                        { (yyval.node) = n_op(UMINUS, 1, (yyvsp[0].node)); }
-#line 1520 "compiler.tab.cpp"
+#line 92 "compiler.y"
+                                        { (yyval.node) = n_op(table, UMINUS, 1, (yyvsp[0].node)); }
+#line 1522 "compiler.tab.cpp"
     break;
 
   case 21: /* expression: term  */
-#line 91 "compiler.y"
+#line 93 "compiler.y"
                                                                 { (yyval.node) = (yyvsp[0].node); }
-#line 1526 "compiler.tab.cpp"
+#line 1528 "compiler.tab.cpp"
     break;
 
   case 22: /* term: term '*' factor  */
-#line 95 "compiler.y"
-                                        { (yyval.node) = n_op('*', 2, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1532 "compiler.tab.cpp"
+#line 97 "compiler.y"
+                                        { (yyval.node) = n_op(table, '*', 2, (yyvsp[-2].node), (yyvsp[0].node)); }
+#line 1534 "compiler.tab.cpp"
     break;
 
   case 23: /* term: term '/' factor  */
-#line 96 "compiler.y"
-                                        { (yyval.node) = n_op('/', 2, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1538 "compiler.tab.cpp"
+#line 98 "compiler.y"
+                                        { (yyval.node) = n_op(table, '/', 2, (yyvsp[-2].node), (yyvsp[0].node)); }
+#line 1540 "compiler.tab.cpp"
     break;
 
   case 24: /* term: factor  */
-#line 97 "compiler.y"
+#line 99 "compiler.y"
                                                 { (yyval.node) = (yyvsp[0].node); }
-#line 1544 "compiler.tab.cpp"
+#line 1546 "compiler.tab.cpp"
     break;
 
   case 25: /* factor: var  */
-#line 101 "compiler.y"
+#line 103 "compiler.y"
                                                         { (yyval.node) = (yyvsp[0].node); }
-#line 1550 "compiler.tab.cpp"
+#line 1552 "compiler.tab.cpp"
     break;
 
   case 26: /* factor: number  */
-#line 102 "compiler.y"
+#line 104 "compiler.y"
                                                 { (yyval.node) = (yyvsp[0].node); }
-#line 1556 "compiler.tab.cpp"
+#line 1558 "compiler.tab.cpp"
     break;
 
   case 27: /* factor: '(' expression ')'  */
-#line 103 "compiler.y"
-                                { (yyval.node) = n_op('(', 1, (yyvsp[-1].node)); }
-#line 1562 "compiler.tab.cpp"
+#line 105 "compiler.y"
+                                { (yyval.node) = n_op(table, '(', 1, (yyvsp[-1].node)); }
+#line 1564 "compiler.tab.cpp"
     break;
 
   case 28: /* string: STRING  */
-#line 107 "compiler.y"
+#line 109 "compiler.y"
                                 { (yyval.node) = n_str((yyvsp[0].str)); }
-#line 1568 "compiler.tab.cpp"
+#line 1570 "compiler.tab.cpp"
     break;
 
   case 29: /* var: VARIABLE  */
-#line 111 "compiler.y"
-                        { (yyval.node) = n_var((yyvsp[0].var)); }
-#line 1574 "compiler.tab.cpp"
+#line 113 "compiler.y"
+                        { (yyval.node) = n_var(table, (yyvsp[0].var)); }
+#line 1576 "compiler.tab.cpp"
     break;
 
   case 30: /* number: INTEGER  */
-#line 115 "compiler.y"
+#line 117 "compiler.y"
                         { (yyval.node) = n_int((yyvsp[0].integer)); }
-#line 1580 "compiler.tab.cpp"
+#line 1582 "compiler.tab.cpp"
     break;
 
   case 31: /* number: T_DECIMAL  */
-#line 116 "compiler.y"
+#line 118 "compiler.y"
                         { (yyval.node) = n_float((yyvsp[0].decimal)); }
-#line 1586 "compiler.tab.cpp"
+#line 1588 "compiler.tab.cpp"
     break;
 
   case 32: /* relop: EQ  */
-#line 120 "compiler.y"
-                                { (yyval.node) = n_op(EQ, 0); }
-#line 1592 "compiler.tab.cpp"
+#line 122 "compiler.y"
+                                { (yyval.node) = n_op(table, EQ, 0); }
+#line 1594 "compiler.tab.cpp"
     break;
 
   case 33: /* relop: GT  */
-#line 121 "compiler.y"
-                        { (yyval.node) = n_op(GT, 0); }
-#line 1598 "compiler.tab.cpp"
+#line 123 "compiler.y"
+                        { (yyval.node) = n_op(table, GT, 0); }
+#line 1600 "compiler.tab.cpp"
     break;
 
   case 34: /* relop: LT  */
-#line 122 "compiler.y"
-                        { (yyval.node) = n_op(LT, 0); }
-#line 1604 "compiler.tab.cpp"
+#line 124 "compiler.y"
+                        { (yyval.node) = n_op(table, LT, 0); }
+#line 1606 "compiler.tab.cpp"
     break;
 
   case 35: /* relop: GE  */
-#line 123 "compiler.y"
-                        { (yyval.node) = n_op(GE, 0); }
-#line 1610 "compiler.tab.cpp"
+#line 125 "compiler.y"
+                        { (yyval.node) = n_op(table, GE, 0); }
+#line 1612 "compiler.tab.cpp"
     break;
 
   case 36: /* relop: LE  */
-#line 124 "compiler.y"
-                        { (yyval.node) = n_op(LE, 0); }
-#line 1616 "compiler.tab.cpp"
+#line 126 "compiler.y"
+                        { (yyval.node) = n_op(table, LE, 0); }
+#line 1618 "compiler.tab.cpp"
     break;
 
   case 37: /* relop: NE  */
-#line 125 "compiler.y"
-                        { (yyval.node) = n_op(NE, 0); }
-#line 1622 "compiler.tab.cpp"
+#line 127 "compiler.y"
+                        { (yyval.node) = n_op(table, NE, 0); }
+#line 1624 "compiler.tab.cpp"
     break;
 
 
-#line 1626 "compiler.tab.cpp"
+#line 1628 "compiler.tab.cpp"
 
       default: break;
     }
@@ -1847,35 +1849,76 @@ yyreturn:
   return yyresult;
 }
 
-#line 128 "compiler.y"
+#line 130 "compiler.y"
 
 
 void yyerror(const char* msg){
-	fprintf(stderr, "ERROR (Line %d): %s\n", yylineno, msg);
+	fprintf(info, "ERROR (Line %d): %s\n", yylineno, msg);
+	success = false;
 }
 
 int main(int argc, char **argv){
-	// Attempt to assign passed input and output files
-	if (argc > 2){
-		input = fopen(argv[1], "r");
-		if (!input) fprintf(stderr, "Failed to open input file \"%s\".", argv[1]);
+	bool opened = true;
+	// Attempt to assign passed input, output and info files
+	if (argc == 4){
+		input = fopen(argv[1], "r+");
+		if (!input) {
+			fprintf(stderr, "Failed to open input file \"%s\". (%d)\n", argv[1], errno);
+			opened = false;
+		}
 		yyin = input;
 		out = fopen(argv[2], "w");
-		if (!out) fprintf(stderr, "Failed to open output file \"%s\".", argv[1]);
+		if (!out) {
+			fprintf(stderr, "Failed to open output file \"%s\". (%d)\n", argv[2], errno);
+			opened = false;
+		}
+		info = fopen(argv[3], "w");
+		if (!info){
+			fprintf(stderr, "Failed to open info file \"%s\". (%d)\n", argv[3], errno);
+			info = fopen("nul", "w");
+		}
+		if (!opened) return 0;
 	}
+	// Attempt to assign pass input and output, info goes to stdout
+	else if (argc == 3){
+		input = fopen(argv[1], "r+");
+		if (!input) {
+			fprintf(stderr, "Failed to open input file \"%s\". (%d)\n", argv[1], errno);
+			opened = false;
+		}
+		yyin = input;
+		out = fopen(argv[2], "w");
+		if (!out) {
+			fprintf(stderr, "Failed to open output file \"%s\". (%d)\n", argv[2], errno);
+			opened = false;
+		}
+		info = stdout;
+		if (!opened) return 0;
+	}
+	// Else use defaults
 	else {
-		fprintf(stderr, "Insufficient args. Using default input and output.");
+		fprintf(stderr, "Insufficient args. Using default input and output.\n");
 		input = fopen("source.tb", "r");
 		if (!input) yyin = stdin;
 		else yyin = input;
 		out = fopen("source.c", "w");
 		if (!out) out = stdout;
+		info = fopen("info.txt", "w");
 	}
 	// Append compiler header
 	fprintf(out, "#include <stdlib.h>\n#include <stdio.h>\n#include <string.h>\nint main(){\n");
 	// Specify debug modes
-	yy_flex_debug = 0;
-	//yydebug = 0;
+	yy_flex_debug = 1;
+	yydebug = 1;
 	yyparse();
-	return 0;
+	// Append compiler footer
+	fprintf(out, "\treturn 0;\n}"); 
+	// Report success
+	if (success) {
+		fprintf(info, "Compiled successfully.\n");
+		return 0;
+	}
+	else {
+		return 1;
+	}
 }

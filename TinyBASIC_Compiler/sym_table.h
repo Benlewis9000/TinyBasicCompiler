@@ -1,18 +1,11 @@
+/*
 #pragma once
-
-#define _CRT_SECURE_NO_WARNINGS
 
 #include "syntax_tree.h"
 
 typedef struct Symbol {
-
 	char* id;
 	NodeWrapper* node;
-	/*
-	int type;	// 0 for int, 1 for string
-	char* str;
-	int val;
-	*/
 } Symbol;
 
 typedef struct SymTable {
@@ -42,3 +35,27 @@ void symtbl_push_node(SymTable* symtbl, char* id, NodeWrapper* node);
 int symtbl_size(SymTable* symtbl);
 
 Symbol* symtbl_get(SymTable* symtbl, char* id);
+*/
+
+
+
+#pragma once
+
+#include <stdio.h>
+#include <string.h>
+#include "fwd_sym_table.h"
+#include "fwd_syntax_tree.h"
+
+Symbol* symbol_create(char* id, NodeWrapper* node);
+
+SymTable* symtbl_create(int capacity);
+
+void symtbl_resize(SymTable* symtbl, int new_capacity);
+
+void symtbl_free(SymTable* symtbl);
+
+void symtbl_push(SymTable* symtbl, Symbol* symbol);
+
+void symtbl_push_node(SymTable* symtbl, char* id, NodeWrapper* node);
+
+int symtbl_size(SymTable* symtbl);

@@ -12,7 +12,7 @@ char buff[256];
 char *s;
 %}
 
-%x SSTRING
+%x S_STRING
 
 digit	[0-9]
 ch		[a-zA-Z]
@@ -23,11 +23,11 @@ ch		[a-zA-Z]
 							yylval.integer = atoi(yytext);
 							return INTEGER;
 						}
-{digit}+.{digit}+		{
+{digit}+\.{digit}+		{
 							yylval.decimal = atof(yytext);
                             return T_DECIMAL;
 						}
-[-+*/(),]				{
+[-+*\/(),]				{
 							return *yytext;
 						}
 (=)						{	return EQ; }
@@ -43,17 +43,17 @@ ch		[a-zA-Z]
 (GOTO)					{	return GOTO; }
 (LET)					{	return LET; }
 (END)					{	return END; }
-(\")					{ BEGIN SSTRING; s = buff; 
+(\")					{ BEGIN S_STRING; s = buff; 
 						  *s++ = '\"'; 
 						}
-<SSTRING>\\\"			{ *s++ = '\\'; *s++ = '\"'; }
-<SSTRING>\"				{ *s++ = '\"'; *s++ = 0;
+<S_STRING>\\\"			{ *s++ = '\\'; *s++ = '\"'; }
+<S_STRING>\"			{ *s++ = '\"'; *s++ = 0;
 						  yylval.str = _strdup(buff);
 						  BEGIN 0;
 						  return STRING;
 						}
-<SSTRING>.				{ *s++ = *yytext; }
-{ch}+					{	yylval.str = _strdup(yytext);
+<S_STRING>.				{ *s++ = *yytext; }
+{ch}+[{ch}0-9_]*		{	yylval.str = _strdup(yytext);
 							return VARIABLE;
 						}
 

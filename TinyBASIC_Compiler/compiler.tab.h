@@ -39,7 +39,7 @@
 # define YY_YY_COMPILER_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 0
+# define YYDEBUG 1
 #endif
 #if YYDEBUG
 extern int yydebug;
@@ -80,7 +80,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 23 "compiler.y"
+#line 25 "compiler.y"
 
 	int integer;
 	double decimal;
