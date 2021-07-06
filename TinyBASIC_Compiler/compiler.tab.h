@@ -80,7 +80,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 25 "compiler.y"
+#line 88 "compiler.y"
 
 	int integer;
 	double decimal;

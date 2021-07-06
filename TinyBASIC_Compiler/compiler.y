@@ -1,3 +1,17 @@
+/**
+******************************************************************************
+* @file    compiler.y
+* @author  Ben Lewis
+* @version V1.0.0
+* @date    06-July-2021
+* @brief   This file provides input for Bison to generate the syntax parser.
+* Here the Tiny Basic grammar is defined. Production rules retrieve tokens
+* from the lexer and build a stack that is reduced when a rule is matched. 
+* Actions associated to that rule are then executed to build and abstract
+* syntax tree and transpile it to a C code source file.
+******************************************************************************
+*/
+
 %define parse.error verbose
 
 %{
@@ -9,17 +23,66 @@ extern "C" {
 	int yylex();
 	int YYACCEPT();
 }
-// Symbol table for user variables
-SymTable* table = symtbl_create(1);
+
 void yyerror(const char*);
+
+/** @addtogroup TB_COMPILER
+* @{
+*/
+
+/** @defgroup PARSER
+* @brief symbol table definitions file
+* @{
+*/ 
+
+/** @defgroup PARSER_Variables
+* @{
+*/ 
+
+/**
+ * Symbol table for user variables.
+ */
+SymTable* table = symtbl_create(1);
+
+/**
+* Debug flag for lexer.
+*/
 extern int yy_flex_debug;
+
+/**
+* Current input line number.
+*/
 extern int yylineno;
+
+/**
+* File lexer will read tokens from.
+*/
 extern FILE* yyin;
-// Output file for compiled code
+
+/**
+* File containing tiny basic source code.
+*/
 FILE* input;
+
+/**
+* File to write transpiled C code to.
+*/
 FILE* out;
+
+/**
+* File to write process info to.
+*/
 FILE* info;
+
+/**
+* Flag for compilation success, may be set to false at any point.
+*/
 bool success = true;
+
+/**
+* @}
+*/ 
+
 %}
 
 %union {
@@ -129,51 +192,33 @@ relop:
 
 %%
 
+/** @defgroup PARSER_Functions
+* @{
+*/ 
+
+/**
+ * @brief: Report an error during compilation to info file (sets success flag to false).
+ * @param msg: Error message
+ * @retval None
+ */
 void yyerror(const char* msg){
 	fprintf(info, "ERROR (Line %d): %s\n", yylineno, msg);
 	success = false;
 }
 
+/**
+ * @brief: Main entry point for Tiny Basic Compiler application. Arguments passed should
+ * be paths to an input file, output file and info file. If paths are not found, default
+ * values of "source.tb", "source.c" and "info.txt" will be used respectively.
+ * @param argc: Number of arguments
+ * @param argv: Array of strings (arguments)
+ * @retval int: 0 for success, otherwise compilation failure.
+ */
 int main(int argc, char **argv){
 	bool opened = true;
-	// Attempt to assign passed input, output and info files
-	if (argc == 4){
-		input = fopen(argv[1], "r+");
-		if (!input) {
-			fprintf(stderr, "Failed to open input file \"%s\". (%d)\n", argv[1], errno);
-			opened = false;
-		}
-		yyin = input;
-		out = fopen(argv[2], "w");
-		if (!out) {
-			fprintf(stderr, "Failed to open output file \"%s\". (%d)\n", argv[2], errno);
-			opened = false;
-		}
-		info = fopen(argv[3], "w");
-		if (!info){
-			fprintf(stderr, "Failed to open info file \"%s\". (%d)\n", argv[3], errno);
-			info = fopen("nul", "w");
-		}
-		if (!opened) return 0;
-	}
-	// Attempt to assign pass input and output, info goes to stdout
-	else if (argc == 3){
-		input = fopen(argv[1], "r+");
-		if (!input) {
-			fprintf(stderr, "Failed to open input file \"%s\". (%d)\n", argv[1], errno);
-			opened = false;
-		}
-		yyin = input;
-		out = fopen(argv[2], "w");
-		if (!out) {
-			fprintf(stderr, "Failed to open output file \"%s\". (%d)\n", argv[2], errno);
-			opened = false;
-		}
-		info = stdout;
-		if (!opened) return 0;
-	}
-	// Else use defaults
-	else {
+	// Attempt to assign passed input, output and info files via argv
+	// Insufficent args, default file paths uses
+	if (argc < 3){
 		fprintf(stderr, "Insufficient args. Using default input and output.\n");
 		input = fopen("source.tb", "r");
 		if (!input) yyin = stdin;
@@ -182,11 +227,39 @@ int main(int argc, char **argv){
 		if (!out) out = stdout;
 		info = fopen("info.txt", "w");
 	}
+	else {
+		// Input and output file paths passed
+		if (argc > 2){
+			input = fopen(argv[1], "r+");
+			if (!input) {
+				fprintf(stderr, "Failed to open input file \"%s\". (%d)\n", argv[1], errno);
+				opened = false;
+			}
+			yyin = input;
+			out = fopen(argv[2], "w");
+			if (!out) {
+				fprintf(stderr, "Failed to open output file \"%s\". (%d)\n", argv[2], errno);
+				opened = false;
+			}
+			info = stderr;
+			if (!opened) return 0;
+		}
+		// Info file path passed
+		if (argc > 3){
+			info = fopen(argv[3], "w");
+			if (!info){
+				fprintf(stderr, "Failed to open info file \"%s\". (%d)\n", argv[3], errno);
+				info = fopen("nul", "w");
+			}
+			if (!opened) return 0;
+		}
+	}
+
 	// Append compiler header
 	fprintf(out, "#include <stdlib.h>\n#include <stdio.h>\n#include <string.h>\nint main(){\n");
 	// Specify debug modes
-	yy_flex_debug = 1;
-	yydebug = 1;
+	yy_flex_debug = 0;
+	yydebug = 0;
 	yyparse();
 	// Append compiler footer
 	fprintf(out, "\treturn 0;\n}"); 
@@ -199,3 +272,15 @@ int main(int argc, char **argv){
 		return 1;
 	}
 }
+
+/**
+* @}
+*/ 
+
+/**
+* @}
+*/ 
+
+/**
+* @}
+*/ 

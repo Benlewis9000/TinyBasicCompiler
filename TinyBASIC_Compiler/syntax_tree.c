@@ -1,5 +1,33 @@
+/**
+******************************************************************************
+* @file    syntax_tree.c 
+* @author  Ben Lewis
+* @version V1.0.0
+* @date    03-July-2021
+* @brief   Provide support for the creation and manipulation of a syntax tree.
+******************************************************************************
+*/
+
 #include "syntax_tree.h"
 
+/** @addtogroup TB_COMPILER
+* @{
+*/
+
+/** @defgroup SYNTAX_TREE
+* @brief syntax tree definitions file
+* @{
+*/ 
+
+/** @defgroup SYNTAX_TREE_Functions
+* @{
+*/ 
+
+/**
+* @brief Create an empty node in memory.
+* @param None
+* @retval NodeWrapper* created.
+*/
 NodeWrapper* n_create(){
 	NodeWrapper* node = (NodeWrapper*) malloc(sizeof(NodeWrapper));
 	if (!node){
@@ -10,6 +38,11 @@ NodeWrapper* n_create(){
 	return node;
 }
 
+/**
+* @brief Create a node of type int in memory.
+* @param: val the integer value the node represents
+* @retval NodeWrapper* created.
+*/
 NodeWrapper* n_int(int val){
 	NodeWrapper* node = n_create();
 	node->type = NodeInt;
@@ -18,6 +51,11 @@ NodeWrapper* n_int(int val){
 	return node;
 }
 
+/**
+* @brief Create a node of type float in memory.
+* @param val: the float value the node represents
+* @retval NodeWrapper* created.
+*/
 NodeWrapper* n_float(double val){
 	NodeWrapper* node = n_create();
 	node->type = NodeFloat;
@@ -26,6 +64,11 @@ NodeWrapper* n_float(double val){
 	return node;
 }
 
+/**
+* @brief Create a node of type string in memory.
+* @param val: the string value the node represents
+* @retval NodeWrapper* created.
+*/
 NodeWrapper* n_str(char* val){
 	NodeWrapper* node = n_create();
 	node->type = NodeStr;
@@ -35,23 +78,32 @@ NodeWrapper* n_str(char* val){
 	return node;
 }
 
-// WARNING: Does NOT create a symbol, only a reference to a symbol in the syntax tree
-//NodeWrapper* n_var(char* id){
+/**
+* @brief Create a node of type variable in memory. Note: Does NOT create a symbol, only a reference to a symbol in the syntax tree.
+* @param table: the symbol table
+* @retval NodeWrapper* created.
+*/
 NodeWrapper* n_var(SymTable* table, char* id){
 	NodeWrapper* node = n_create();
 	node->type = NodeVar;
 
-	// If symbol of same ID exists, copy raw value TODO removed because this assumes user as assigning same type to the var, not garuanteed
-	/*Symbol* existing = symtbl_get(table, id);
-	if (existing) node->raw = existing->node->raw;*/
-
-	node->raw = RawUnknown;
+	// If symbol of same ID exists, copy raw value TODO removed because this assumes user as assigning same type to the var, not garuanteed H: <- that assumes user is even assigning
+	Symbol* existing = symtbl_get(table, id);
+	if (existing) node->raw = existing->node->raw;
+	else node->raw = RawUnknown;
+	
 	node->v_var = malloc( (strlen(id)+1) * sizeof(char));
 	strcpy(node->v_var, id);
 	return node;
 }
 
-//NodeWrapper* n_op(int oper, int nops, ...){
+/**
+* @brief Create a node of type operator in memory.
+* @param table: the symbol table
+* @param oper: operator token value
+* @param nops: number of operands
+* @retval NodeWrapper* created.
+*/
 NodeWrapper* n_op(SymTable* table, int oper, int nops, ...){
 	NodeWrapper* node = n_create();
 	node->type = NodeOp;
@@ -78,8 +130,10 @@ NodeWrapper* n_op(SymTable* table, int oper, int nops, ...){
 				// Set var nodes raw to that found in table
 				node->v_op.operands[i]->raw = sym->node->raw;
 				// If var is float, set raw to float
-				if (sym->node->raw == RawFloat) 
-					node->raw = RawFloat;
+				// TODO commented 02/07/21 19:15
+				/*if (sym->node->raw == RawFloat) 
+					node->raw = RawFloat;*/
+				node->raw = sym->node->raw;
 			}
 		}
 		
@@ -91,6 +145,11 @@ NodeWrapper* n_op(SymTable* table, int oper, int nops, ...){
 	return node;
 }
 
+/**
+* @brief Free memory allocated to a node.
+* @param None
+* @retval None
+*/
 void n_free(NodeWrapper* node){
 	// Free any allocated pointers in union
 	switch (node->type){
@@ -109,3 +168,15 @@ void n_free(NodeWrapper* node){
 	// Free node
 	free(node);
 }
+
+/**
+* @}
+*/
+
+/**
+* @}
+*/
+
+/**
+* @}
+*/ 

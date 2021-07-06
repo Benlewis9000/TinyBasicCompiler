@@ -1,15 +1,39 @@
-#pragma once
+/**
+******************************************************************************
+* @file    compiler.c 
+* @author  Ben Lewis
+* @version V1.0.0
+* @date    06-July-2021
+* @brief   Transpiler functions will recursively walk an abstract syntax tree
+* made of NodeWrappers and transpile the tree into valid C code, or report any
+* appropriate errors. 
+******************************************************************************
+*/
 
 #include "compiler.h"
 
-CompilerState state = BEGIN;
+/** @addtogroup TB_COMPILER
+* @{
+*/
 
-// TODO: remove, now done in main yacc method
-void header(FILE* out){
-	fprintf(out, "#include <stdlib.h>\n#include <stdio.h>\n#include <string.h>\nint main(){\n");
-}
+/** @defgroup COMPILER
+* @brief compiler definitions file
+* @{
+*/ 
 
-void trans_printf(FILE*out, SymTable* table, NodeWrapper* node){
+/** @defgroup COMPILER_Functions
+* @{
+*/ 
+
+/**
+ * @brief Transpile TB to C code to print a node via printf. This involves deducing the raw value of the node and
+ * continuing the depth first traversal of the syntax tree to get the variable or value that will be printed.
+ * @param out: File to write C code to
+ * @param table: Symbol Table for variable storage and access
+ * @param node: Node to attempt to print from (and root for further traversal)
+ * @retval None
+ */
+void trans_printf(FILE* out, SymTable* table, NodeWrapper* node){
 	// Deduce the raw type that will be printed
 	RawType raw;
 	if (node->type == NodeVar){
@@ -37,6 +61,7 @@ void trans_printf(FILE*out, SymTable* table, NodeWrapper* node){
 			fprintf(out, "\tprintf(\"%cs\", ", '%');
 			break;
 		default:
+			yyerror("Unable to PRINT unknown raw value.");
 			// Do not printf if no value deduced
 			return;
 	}
@@ -45,6 +70,13 @@ void trans_printf(FILE*out, SymTable* table, NodeWrapper* node){
 	fprintf(out, ");\n");
 }
 
+/**
+ * @brief: Transpile an abstract syntax tree to C code via a recursive depth first traversal, starting at the root node.
+ * @param out: File to write C code to
+ * @param table: Symbol Table for variable storage and access
+ * @param node: Root node of current iteration
+ * @param line: Line number of a statement, -1 if not applicable
+ */
 void trans(FILE* out, SymTable* table, NodeWrapper* node, int line){
 	// If line number provided
 	if (line >= 0){
@@ -158,9 +190,9 @@ void trans(FILE* out, SymTable* table, NodeWrapper* node, int line){
 								yyerror("Syntax error, unable to assign given value.");
 								return;
 						}
-						// Push symbol AFTER checking assignee is valid
-						symtbl_push_node(table, node->v_op.operands[0]->v_var, node->v_op.operands[1]);
 					}
+					// Push symbol AFTER checking assignee is valid
+					symtbl_push_node(table, node->v_op.operands[0]->v_var, node->v_op.operands[1]);
 					// else, var already declared
 					fprintf(out, "\t");
 					// variable
@@ -228,3 +260,15 @@ void trans(FILE* out, SymTable* table, NodeWrapper* node, int line){
 	}
 
 }
+
+/**
+* @}
+*/
+
+/**
+* @}
+*/
+
+/**
+* @}
+*/ 

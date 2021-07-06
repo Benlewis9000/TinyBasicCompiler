@@ -1,3 +1,14 @@
+/**
+******************************************************************************
+* @file    compiler.h 
+* @author  Ben Lewis
+* @version V1.0.0
+* @date    06-July-2021
+* @brief   Definitions for functions implemented in the source file. Includes
+* for all required libraries and functions.
+******************************************************************************
+*/
+
 #pragma once
 
 #include <stdbool.h>
@@ -7,12 +18,6 @@
 #include "syntax_tree.h"
 
 extern void yyerror(const char*);
-
-typedef enum CompilerState {
-	BEGIN, TRANSPILING, FINISHED
-} CompilerState;
-
-extern CompilerState state;
 
 void trans_printf(FILE* out, SymTable* table, NodeWrapper* node);
 

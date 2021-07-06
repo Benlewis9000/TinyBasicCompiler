@@ -1,43 +1,12 @@
-/*
-#pragma once
-
-#include "syntax_tree.h"
-
-typedef struct Symbol {
-	char* id;
-	NodeWrapper* node;
-} Symbol;
-
-typedef struct SymTable {
-	size_t capacity;
-	size_t size;
-	Symbol** data;
-} SymTable;
-
-//Symbol* symbol_create(char* id, int type, char* str, int val);
-
-Symbol* symbol_create(char* id, NodeWrapper* node);
-
-//void symbol_free(Symbol* symbol);
-
-//void symbol_print(Symbol* symbol);
-
-SymTable* symtbl_create(int capacity);
-
-void symtbl_resize(SymTable* symtbl, int new_capacity);
-
-void symtbl_free(SymTable* symtbl);
-
-void symtbl_push(SymTable* symtbl, Symbol* symbol);
-
-void symtbl_push_node(SymTable* symtbl, char* id, NodeWrapper* node);
-
-int symtbl_size(SymTable* symtbl);
-
-Symbol* symtbl_get(SymTable* symtbl, char* id);
+/**
+******************************************************************************
+* @file    sym_table.h
+* @author  Ben Lewis
+* @version V1.0.0
+* @date    06-July-2021
+* @brief   Function declarations for Symbol and SymTable related functions.
+******************************************************************************
 */
-
-
 
 #pragma once
 

@@ -507,7 +507,19 @@ int yy_flex_debug = 0;
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
 #line 1 "compiler.l"
-#line 4 "compiler.l"
+/**
+******************************************************************************
+* @file    compiler.l
+* @author  Ben Lewis
+* @version V1.0.0
+* @date    06-July-2021
+* @brief   This file provides input for Flex to generate the lexical analyser.
+* Included are all tokens and their regular expression patterns for the lexer
+* to match when input is passed. Functionality for dynamic string building is
+* also included.
+******************************************************************************
+*/
+#line 17 "compiler.l"
 extern "C" {
 	#include <stdlib.h>
 	#include <string.h>
@@ -515,11 +527,41 @@ extern "C" {
 	void yyerror(const char*);
 }
 #define YY_DECL extern "C" int yylex()
-char buff[256];
-char *s;
-#line 520 "compiler.flex.cpp"
 
-#line 522 "compiler.flex.cpp"
+/** @addtogroup TB_COMPILER
+* @{
+*/
+
+/** @defgroup LEXER
+* @brief symbol table definitions file
+* @{
+*/ 
+
+/** @defgroup LEXER_Variables
+* @{
+*/ 
+
+/**
+ * Char buffer used to build strings.
+ */
+char* buff;
+/**
+ * Record size of buffer (sizeof not compatile with realloc).
+ */
+int buff_size;
+/**
+ * Pointer to chars in buffer used for writing.
+ */
+char* s;
+
+/**
+* @}
+*/ 
+
+void resize_buffer(char** buffer, char** p_buffer, int &size, int min_offset);
+#line 562 "compiler.flex.cpp"
+
+#line 564 "compiler.flex.cpp"
 
 #define INITIAL 0
 #define S_STRING 1
@@ -734,10 +776,10 @@ YY_DECL
 		}
 
 	{
-#line 20 "compiler.l"
+#line 63 "compiler.l"
 
 
-#line 740 "compiler.flex.cpp"
+#line 782 "compiler.flex.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -806,7 +848,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 22 "compiler.l"
+#line 65 "compiler.l"
 { 
 							yylval.integer = atoi(yytext);
 							return INTEGER;
@@ -814,7 +856,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 26 "compiler.l"
+#line 69 "compiler.l"
 {
 							yylval.decimal = atof(yytext);
                             return T_DECIMAL;
@@ -822,128 +864,159 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 30 "compiler.l"
+#line 73 "compiler.l"
 {
 							return *yytext;
 						}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 33 "compiler.l"
+#line 76 "compiler.l"
 {	return EQ; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 34 "compiler.l"
+#line 77 "compiler.l"
 {	return GT; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 35 "compiler.l"
+#line 78 "compiler.l"
 {	return LT; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 36 "compiler.l"
+#line 79 "compiler.l"
 {	return GE; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 37 "compiler.l"
+#line 80 "compiler.l"
 {	return LE; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 38 "compiler.l"
+#line 81 "compiler.l"
 {	return NE; }
 	YY_BREAK
 case 10:
 /* rule 10 can match eol */
 YY_RULE_SETUP
-#line 39 "compiler.l"
+#line 82 "compiler.l"
 {	return CR; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 40 "compiler.l"
+#line 83 "compiler.l"
 {	return PRINT; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 41 "compiler.l"
+#line 84 "compiler.l"
 {	return IF; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 42 "compiler.l"
+#line 85 "compiler.l"
 {	return THEN; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 43 "compiler.l"
+#line 86 "compiler.l"
 {	return GOTO; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 44 "compiler.l"
+#line 87 "compiler.l"
 {	return LET; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 45 "compiler.l"
+#line 88 "compiler.l"
 {	return END; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 46 "compiler.l"
-{ BEGIN S_STRING; s = buff; 
-						  *s++ = '\"'; 
+#line 89 "compiler.l"
+{ 
+							// Enter string state
+							BEGIN S_STRING; 
+							// Initialise buffer memory
+							int buff_init_size = 8;
+							buff = (char*) malloc(buff_init_size * sizeof(char));
+							buff_size = buff_init_size;
+							if(!buff) yyerror("Could no allocate enough memory for new string.");
+							// Write char
+							s = buff; 
+							*s++ = '\"'; 
 						}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 49 "compiler.l"
-{ *s++ = '\\'; *s++ = '\"'; }
+#line 101 "compiler.l"
+{	
+							// Resize buffer as needed
+							resize_buffer(&buff, &s, buff_size, 2);
+							// Write chars
+							*s++ = '\\'; 
+							*s++ = '\"';
+						}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 50 "compiler.l"
-{ *s++ = '\"'; *s++ = 0;
-						  yylval.str = _strdup(buff);
-						  BEGIN 0;
-						  return STRING;
+#line 108 "compiler.l"
+{ 
+							// Resize buffer as needed
+							resize_buffer(&buff, &s, buff_size, 2);
+							// Write chars (null terminate)
+							*s++ = '\"'; 
+							*s++ = 0;
+							// Duplicate buffer into lexer value for syntax parser access
+							yylval.str = _strdup(buff);
+							// Free buffer
+							free(buff);
+							// Return to original state
+							BEGIN 0;
+							// Return token found
+							return STRING;
 						}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 55 "compiler.l"
-{ *s++ = *yytext; }
+#line 123 "compiler.l"
+{ 
+							// Resize buffer as needed
+							resize_buffer(&buff, &s, buff_size, 1);
+							// Write char
+							*s++ = *yytext;
+						}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 56 "compiler.l"
-{	yylval.str = _strdup(yytext);
+#line 129 "compiler.l"
+{	
+							yylval.str = _strdup(yytext);
 							return VARIABLE;
 						}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 60 "compiler.l"
+#line 134 "compiler.l"
 ;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 61 "compiler.l"
+#line 135 "compiler.l"
 {
 							return *yytext;
 						}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 65 "compiler.l"
+#line 139 "compiler.l"
 ECHO;
 	YY_BREAK
-#line 946 "compiler.flex.cpp"
+#line 1019 "compiler.flex.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(S_STRING):
 	yyterminate();
@@ -1961,6 +2034,46 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 65 "compiler.l"
+#line 139 "compiler.l"
 
 
+/** @defgroup LEXER_Functions
+* @{
+*/ 
+
+/**
+ * @brief: Dynamically resize a string buffer and reassign pointers to preserve data, if the
+ * distance between the allocated pointer and writing pointer is less than the minimal
+ * acceptable offset.
+ * @param buffer: pointer to memory for string
+ * @param p_buffer: pointer to pointer writing to string
+ * @param size: value recording the size of the buffer (since sizeof is not compatible with
+ * dynamically reallocated memory)
+ * @param min_offset: minimum acceptable offset between memory and writing pointer before
+ * a resize is required
+ */
+void resize_buffer(char** buffer, char** writer, int &size, int min_offset){
+	// Calculate offset between writer and buffer
+	int offset = *writer - *buffer;
+	// If less than minimum acceptable offset, resize
+	if (size - offset < min_offset){
+		size = size * 2;
+		// Update pointers
+		*buffer = (char*) realloc(*buffer, size * sizeof(char));
+		*writer = *buffer + offset;
+	}
+	// Report error if resize unsuccesful
+	if(!buffer) yyerror("Could no reallocate enough memory for string.");
+}
+
+/**
+* @}
+*/
+
+/**
+* @}
+*/ 
+
+/**
+* @}
+*/ 
