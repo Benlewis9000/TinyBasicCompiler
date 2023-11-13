@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.7.4.  */
+/* A Bison parser, made by GNU Bison 3.8.2.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -46,10 +46,10 @@
    USER NAME SPACE" below.  */
 
 /* Identify Bison output, and Bison version.  */
-#define YYBISON 30704
+#define YYBISON 30802
 
 /* Bison version string.  */
-#define YYBISON_VERSION "3.7.4"
+#define YYBISON_VERSION "3.8.2"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -250,6 +250,18 @@ typedef int_least16_t yytype_int16;
 typedef short yytype_int16;
 #endif
 
+/* Work around bug in HP-UX 11.23, which defines these macros
+   incorrectly for preprocessor constants.  This workaround can likely
+   be removed in 2023, as HPE has promised support for HP-UX 11.23
+   (aka HP-UX 11i v2) only through the end of 2022; see Table 2 of
+   <https://h20195.www2.hpe.com/V2/getpdf.aspx/4AA4-7673ENW.pdf>.  */
+#ifdef __hpux
+# undef UINT_LEAST8_MAX
+# undef UINT_LEAST16_MAX
+# define UINT_LEAST8_MAX 255
+# define UINT_LEAST16_MAX 65535
+#endif
+
 #if defined __UINT_LEAST8_MAX__ && __UINT_LEAST8_MAX__ <= __INT_MAX__
 typedef __UINT_LEAST8_TYPE__ yytype_uint8;
 #elif (!defined __UINT_LEAST8_MAX__ && defined YY_STDINT_H \
@@ -347,17 +359,23 @@ typedef int yy_state_fast_t;
 
 /* Suppress unused-variable warnings by "using" E.  */
 #if ! defined lint || defined __GNUC__
-# define YYUSE(E) ((void) (E))
+# define YY_USE(E) ((void) (E))
 #else
-# define YYUSE(E) /* empty */
+# define YY_USE(E) /* empty */
 #endif
 
-#if defined __GNUC__ && ! defined __ICC && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
 /* Suppress an incorrect diagnostic about yylval being uninitialized.  */
-# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                            \
+#if defined __GNUC__ && ! defined __ICC && 406 <= __GNUC__ * 100 + __GNUC_MINOR__
+# if __GNUC__ * 100 + __GNUC_MINOR__ < 407
+#  define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                           \
+    _Pragma ("GCC diagnostic push")                                     \
+    _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")
+# else
+#  define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                           \
     _Pragma ("GCC diagnostic push")                                     \
     _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")              \
     _Pragma ("GCC diagnostic ignored \"-Wmaybe-uninitialized\"")
+# endif
 # define YY_IGNORE_MAYBE_UNINITIALIZED_END      \
     _Pragma ("GCC diagnostic pop")
 #else
@@ -573,7 +591,7 @@ static const yytype_int8 yytranslate[] =
 };
 
 #if YYDEBUG
-  /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
+/* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
        0,   113,   113,   114,   118,   119,   123,   126,   129,   133,
@@ -610,17 +628,6 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#ifdef YYPRINT
-/* YYTOKNUM[NUM] -- (External) token number corresponding to the
-   (internal) symbol number NUM (which must be that of a token).  */
-static const yytype_int16 yytoknum[] =
-{
-       0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267,   268,    47,    42,    43,    45,   269,   270,
-     271,   272,   273,   274,   275,    44,    40,    41
-};
-#endif
-
 #define YYPACT_NINF (-26)
 
 #define yypact_value_is_default(Yyn) \
@@ -631,8 +638,8 @@ static const yytype_int16 yytoknum[] =
 #define yytable_value_is_error(Yyn) \
   0
 
-  /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
-     STATE-NUM.  */
+/* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
+   STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
       25,    49,     0,     4,     4,     3,   -26,   -26,    12,    40,
@@ -644,9 +651,9 @@ static const yytype_int8 yypact[] =
      -26
 };
 
-  /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
-     Performed when YYTABLE does not specify something else to do.  Zero
-     means the default is an error.  */
+/* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
+   Performed when YYTABLE does not specify something else to do.  Zero
+   means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
        0,     0,     0,     0,     0,     0,     8,     3,     0,     0,
@@ -658,23 +665,23 @@ static const yytype_int8 yydefact[] =
       10
 };
 
-  /* YYPGOTO[NTERM-NUM].  */
+/* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
      -26,   -26,   -26,    22,    -1,   -26,    -2,    36,    37,   -25,
       39,   -26,   -26
 };
 
-  /* YYDEFGOTO[NTERM-NUM].  */
+/* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     8,     9,    10,    11,    19,    20,    21,    22,    23,
+       0,     8,     9,    10,    11,    19,    20,    21,    22,    23,
       24,    25,    47
 };
 
-  /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
-     positive, shift that token.  If negative, reduce the rule whose
-     number is the opposite.  If YYTABLE_NINF, syntax error.  */
+/* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
+   positive, shift that token.  If negative, reduce the rule whose
+   number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
       12,    26,    27,    13,    14,    15,    16,    13,    14,    16,
@@ -699,8 +706,8 @@ static const yytype_int8 yycheck[] =
       23,    14,    15,    37,    38,    -1,    39,    40
 };
 
-  /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
-     symbol of state STATE-NUM.  */
+/* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
+   state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
        0,     3,     7,     8,    10,    11,    12,    13,    29,    30,
@@ -712,7 +719,7 @@ static const yytype_int8 yystos[] =
       32
 };
 
-  /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
+/* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
        0,    28,    29,    29,    30,    30,    31,    31,    31,    32,
@@ -721,7 +728,7 @@ static const yytype_int8 yyr1[] =
       39,    39,    40,    40,    40,    40,    40,    40
 };
 
-  /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
+/* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
        0,     2,     2,     1,     2,     1,     3,     2,     1,     2,
@@ -739,6 +746,7 @@ enum { YYENOMEM = -2 };
 #define YYACCEPT        goto yyacceptlab
 #define YYABORT         goto yyabortlab
 #define YYERROR         goto yyerrorlab
+#define YYNOMEM         goto yyexhaustedlab
 
 
 #define YYRECOVERING()  (!!yyerrstatus)
@@ -779,10 +787,7 @@ do {                                            \
     YYFPRINTF Args;                             \
 } while (0)
 
-/* This macro is provided for backward compatibility. */
-# ifndef YY_LOCATION_PRINT
-#  define YY_LOCATION_PRINT(File, Loc) ((void) 0)
-# endif
+
 
 
 # define YY_SYMBOL_PRINT(Title, Kind, Value, Location)                    \
@@ -806,15 +811,11 @@ yy_symbol_value_print (FILE *yyo,
                        yysymbol_kind_t yykind, YYSTYPE const * const yyvaluep)
 {
   FILE *yyoutput = yyo;
-  YYUSE (yyoutput);
+  YY_USE (yyoutput);
   if (!yyvaluep)
     return;
-# ifdef YYPRINT
-  if (yykind < YYNTOKENS)
-    YYPRINT (yyo, yytoknum[yykind], *yyvaluep);
-# endif
   YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-  YYUSE (yykind);
+  YY_USE (yykind);
   YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
@@ -1195,13 +1196,13 @@ static void
 yydestruct (const char *yymsg,
             yysymbol_kind_t yykind, YYSTYPE *yyvaluep)
 {
-  YYUSE (yyvaluep);
+  YY_USE (yyvaluep);
   if (!yymsg)
     yymsg = "Deleting";
   YY_SYMBOL_PRINT (yymsg, yykind, yyvaluep, yylocationp);
 
   YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-  YYUSE (yykind);
+  YY_USE (yykind);
   YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
@@ -1267,6 +1268,7 @@ yyparse (void)
   YYDPRINTF ((stderr, "Starting parse\n"));
 
   yychar = YYEMPTY; /* Cause a token to be read.  */
+
   goto yysetstate;
 
 
@@ -1292,7 +1294,7 @@ yysetstate:
 
   if (yyss + yystacksize - 1 <= yyssp)
 #if !defined yyoverflow && !defined YYSTACK_RELOCATE
-    goto yyexhaustedlab;
+    YYNOMEM;
 #else
     {
       /* Get the current used size of the three stacks, in elements.  */
@@ -1320,7 +1322,7 @@ yysetstate:
 # else /* defined YYSTACK_RELOCATE */
       /* Extend the stack our own way.  */
       if (YYMAXDEPTH <= yystacksize)
-        goto yyexhaustedlab;
+        YYNOMEM;
       yystacksize *= 2;
       if (YYMAXDEPTH < yystacksize)
         yystacksize = YYMAXDEPTH;
@@ -1331,7 +1333,7 @@ yysetstate:
           YY_CAST (union yyalloc *,
                    YYSTACK_ALLOC (YY_CAST (YYSIZE_T, YYSTACK_BYTES (yystacksize))));
         if (! yyptr)
-          goto yyexhaustedlab;
+          YYNOMEM;
         YYSTACK_RELOCATE (yyss_alloc, yyss);
         YYSTACK_RELOCATE (yyvs_alloc, yyvs);
 #  undef YYSTACK_RELOCATE
@@ -1352,6 +1354,7 @@ yysetstate:
         YYABORT;
     }
 #endif /* !defined yyoverflow && !defined YYSTACK_RELOCATE */
+
 
   if (yystate == YYFINAL)
     YYACCEPT;
@@ -1467,13 +1470,13 @@ yyreduce:
   case 2: /* program: line_list END  */
 #line 113 "compiler.y"
                                                         { YYACCEPT; }
-#line 1471 "compiler.tab.cpp"
+#line 1474 "compiler.tab.cpp"
     break;
 
   case 3: /* program: END  */
 #line 114 "compiler.y"
                                                                 { YYACCEPT; }
-#line 1477 "compiler.tab.cpp"
+#line 1480 "compiler.tab.cpp"
     break;
 
   case 6: /* line: INTEGER statement CR  */
@@ -1481,7 +1484,7 @@ yyreduce:
                                                 {
 									 trans(out, table, (yyvsp[-1].node), (yyvsp[-2].integer)); n_free((yyvsp[-1].node));
 									}
-#line 1485 "compiler.tab.cpp"
+#line 1488 "compiler.tab.cpp"
     break;
 
   case 7: /* line: statement CR  */
@@ -1489,191 +1492,191 @@ yyreduce:
                                                         { 
 									 trans(out, table, (yyvsp[-1].node), -1);	n_free((yyvsp[-1].node));
 									}
-#line 1493 "compiler.tab.cpp"
+#line 1496 "compiler.tab.cpp"
     break;
 
   case 8: /* line: CR  */
 #line 129 "compiler.y"
                                                                 {}
-#line 1499 "compiler.tab.cpp"
+#line 1502 "compiler.tab.cpp"
     break;
 
   case 9: /* statement: PRINT expr_list  */
 #line 133 "compiler.y"
                                                                                                 { (yyval.node) = n_op(table, PRINT, 1, (yyvsp[0].node)); }
-#line 1505 "compiler.tab.cpp"
+#line 1508 "compiler.tab.cpp"
     break;
 
   case 10: /* statement: IF expression relop expression THEN statement  */
 #line 134 "compiler.y"
                                                                 { (yyval.node) = n_op(table, IF, 4, (yyvsp[-4].node), (yyvsp[-3].node), (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1511 "compiler.tab.cpp"
+#line 1514 "compiler.tab.cpp"
     break;
 
   case 11: /* statement: GOTO expression  */
 #line 135 "compiler.y"
                                                                                                 { (yyval.node) = n_op(table, GOTO, 1, (yyvsp[0].node)); }
-#line 1517 "compiler.tab.cpp"
+#line 1520 "compiler.tab.cpp"
     break;
 
   case 12: /* statement: LET var EQ expression  */
 #line 136 "compiler.y"
                                                                                         { (yyval.node) = n_op(table, LET, 2, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1523 "compiler.tab.cpp"
+#line 1526 "compiler.tab.cpp"
     break;
 
   case 13: /* statement: LET var EQ string  */
 #line 137 "compiler.y"
                                                                                                 { (yyval.node) = n_op(table, LET, 2, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1529 "compiler.tab.cpp"
+#line 1532 "compiler.tab.cpp"
     break;
 
   case 14: /* expr_list: expr_list ',' string  */
 #line 141 "compiler.y"
                                                 { (yyval.node) = n_op(table, 'e', 2, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1535 "compiler.tab.cpp"
+#line 1538 "compiler.tab.cpp"
     break;
 
   case 15: /* expr_list: expr_list ',' expression  */
 #line 142 "compiler.y"
                                                 { (yyval.node) = n_op(table, 'e', 2, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1541 "compiler.tab.cpp"
+#line 1544 "compiler.tab.cpp"
     break;
 
   case 16: /* expr_list: string  */
 #line 143 "compiler.y"
                                                                 { (yyval.node) = (yyvsp[0].node); }
-#line 1547 "compiler.tab.cpp"
+#line 1550 "compiler.tab.cpp"
     break;
 
   case 17: /* expr_list: expression  */
 #line 144 "compiler.y"
                                                         { (yyval.node) = (yyvsp[0].node); }
-#line 1553 "compiler.tab.cpp"
+#line 1556 "compiler.tab.cpp"
     break;
 
   case 18: /* expression: expression '+' term  */
 #line 153 "compiler.y"
                                                         { (yyval.node) = n_op(table, '+', 2, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1559 "compiler.tab.cpp"
+#line 1562 "compiler.tab.cpp"
     break;
 
   case 19: /* expression: expression '-' term  */
 #line 154 "compiler.y"
                                                 { (yyval.node) = n_op(table, '-', 2, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1565 "compiler.tab.cpp"
+#line 1568 "compiler.tab.cpp"
     break;
 
   case 20: /* expression: '-' expression  */
 #line 155 "compiler.y"
                                         { (yyval.node) = n_op(table, UMINUS, 1, (yyvsp[0].node)); }
-#line 1571 "compiler.tab.cpp"
+#line 1574 "compiler.tab.cpp"
     break;
 
   case 21: /* expression: term  */
 #line 156 "compiler.y"
                                                                 { (yyval.node) = (yyvsp[0].node); }
-#line 1577 "compiler.tab.cpp"
+#line 1580 "compiler.tab.cpp"
     break;
 
   case 22: /* term: term '*' factor  */
 #line 160 "compiler.y"
                                         { (yyval.node) = n_op(table, '*', 2, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1583 "compiler.tab.cpp"
+#line 1586 "compiler.tab.cpp"
     break;
 
   case 23: /* term: term '/' factor  */
 #line 161 "compiler.y"
                                         { (yyval.node) = n_op(table, '/', 2, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1589 "compiler.tab.cpp"
+#line 1592 "compiler.tab.cpp"
     break;
 
   case 24: /* term: factor  */
 #line 162 "compiler.y"
                                                 { (yyval.node) = (yyvsp[0].node); }
-#line 1595 "compiler.tab.cpp"
+#line 1598 "compiler.tab.cpp"
     break;
 
   case 25: /* factor: var  */
 #line 166 "compiler.y"
                                                         { (yyval.node) = (yyvsp[0].node); }
-#line 1601 "compiler.tab.cpp"
+#line 1604 "compiler.tab.cpp"
     break;
 
   case 26: /* factor: number  */
 #line 167 "compiler.y"
                                                 { (yyval.node) = (yyvsp[0].node); }
-#line 1607 "compiler.tab.cpp"
+#line 1610 "compiler.tab.cpp"
     break;
 
   case 27: /* factor: '(' expression ')'  */
 #line 168 "compiler.y"
                                 { (yyval.node) = n_op(table, '(', 1, (yyvsp[-1].node)); }
-#line 1613 "compiler.tab.cpp"
+#line 1616 "compiler.tab.cpp"
     break;
 
   case 28: /* string: STRING  */
 #line 172 "compiler.y"
                                 { (yyval.node) = n_str((yyvsp[0].str)); }
-#line 1619 "compiler.tab.cpp"
+#line 1622 "compiler.tab.cpp"
     break;
 
   case 29: /* var: VARIABLE  */
 #line 176 "compiler.y"
                         { (yyval.node) = n_var(table, (yyvsp[0].var)); }
-#line 1625 "compiler.tab.cpp"
+#line 1628 "compiler.tab.cpp"
     break;
 
   case 30: /* number: INTEGER  */
 #line 180 "compiler.y"
                         { (yyval.node) = n_int((yyvsp[0].integer)); }
-#line 1631 "compiler.tab.cpp"
+#line 1634 "compiler.tab.cpp"
     break;
 
   case 31: /* number: T_DECIMAL  */
 #line 181 "compiler.y"
                         { (yyval.node) = n_float((yyvsp[0].decimal)); }
-#line 1637 "compiler.tab.cpp"
+#line 1640 "compiler.tab.cpp"
     break;
 
   case 32: /* relop: EQ  */
 #line 185 "compiler.y"
                                 { (yyval.node) = n_op(table, EQ, 0); }
-#line 1643 "compiler.tab.cpp"
+#line 1646 "compiler.tab.cpp"
     break;
 
   case 33: /* relop: GT  */
 #line 186 "compiler.y"
                         { (yyval.node) = n_op(table, GT, 0); }
-#line 1649 "compiler.tab.cpp"
+#line 1652 "compiler.tab.cpp"
     break;
 
   case 34: /* relop: LT  */
 #line 187 "compiler.y"
                         { (yyval.node) = n_op(table, LT, 0); }
-#line 1655 "compiler.tab.cpp"
+#line 1658 "compiler.tab.cpp"
     break;
 
   case 35: /* relop: GE  */
 #line 188 "compiler.y"
                         { (yyval.node) = n_op(table, GE, 0); }
-#line 1661 "compiler.tab.cpp"
+#line 1664 "compiler.tab.cpp"
     break;
 
   case 36: /* relop: LE  */
 #line 189 "compiler.y"
                         { (yyval.node) = n_op(table, LE, 0); }
-#line 1667 "compiler.tab.cpp"
+#line 1670 "compiler.tab.cpp"
     break;
 
   case 37: /* relop: NE  */
 #line 190 "compiler.y"
                         { (yyval.node) = n_op(table, NE, 0); }
-#line 1673 "compiler.tab.cpp"
+#line 1676 "compiler.tab.cpp"
     break;
 
 
-#line 1677 "compiler.tab.cpp"
+#line 1680 "compiler.tab.cpp"
 
       default: break;
     }
@@ -1749,7 +1752,7 @@ yyerrlab:
           }
         yyerror (yymsgp);
         if (yysyntax_error_status == YYENOMEM)
-          goto yyexhaustedlab;
+          YYNOMEM;
       }
     }
 
@@ -1785,6 +1788,7 @@ yyerrorlab:
      label yyerrorlab therefore never appears in user code.  */
   if (0)
     YYERROR;
+  ++yynerrs;
 
   /* Do not reclaim the symbols of the rule whose action triggered
      this YYERROR.  */
@@ -1845,7 +1849,7 @@ yyerrlab1:
 `-------------------------------------*/
 yyacceptlab:
   yyresult = 0;
-  goto yyreturn;
+  goto yyreturnlab;
 
 
 /*-----------------------------------.
@@ -1853,24 +1857,22 @@ yyacceptlab:
 `-----------------------------------*/
 yyabortlab:
   yyresult = 1;
-  goto yyreturn;
+  goto yyreturnlab;
 
 
-#if 1
-/*-------------------------------------------------.
-| yyexhaustedlab -- memory exhaustion comes here.  |
-`-------------------------------------------------*/
+/*-----------------------------------------------------------.
+| yyexhaustedlab -- YYNOMEM (memory exhaustion) comes here.  |
+`-----------------------------------------------------------*/
 yyexhaustedlab:
   yyerror (YY_("memory exhausted"));
   yyresult = 2;
-  goto yyreturn;
-#endif
+  goto yyreturnlab;
 
 
-/*-------------------------------------------------------.
-| yyreturn -- parsing is finished, clean up and return.  |
-`-------------------------------------------------------*/
-yyreturn:
+/*----------------------------------------------------------.
+| yyreturnlab -- parsing is finished, clean up and return.  |
+`----------------------------------------------------------*/
+yyreturnlab:
   if (yychar != YYEMPTY)
     {
       /* Make sure we have latest lookahead translation.  See comments at
