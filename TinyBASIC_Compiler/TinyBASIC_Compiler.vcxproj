@@ -26,15 +26,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="compiler.c" />
-    <ClCompile Include="compiler.flex.cpp" />
-    <ClCompile Include="compiler.tab.cpp" />
     <ClCompile Include="expr_list.c" />
     <ClCompile Include="sym_table.c" />
     <ClCompile Include="syntax_tree.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="compiler.h" />
-    <ClInclude Include="compiler.tab.h" />
     <ClInclude Include="expr_list.h" />
     <ClInclude Include="fwd_sym_table.h" />
     <ClInclude Include="fwd_syntax_tree.h" />
