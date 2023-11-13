@@ -1,2 +1,5 @@
-PRINT "Benlewis9000"
+LET i = 1
+10 PRINT i, "\n"
+LET i = i * 2
+IF i <= 100 THEN GOTO 10
 END
