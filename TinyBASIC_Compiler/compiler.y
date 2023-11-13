@@ -217,7 +217,7 @@ void yyerror(const char* msg){
 int main(int argc, char **argv){
 	bool opened = true;
 	// Attempt to assign passed input, output and info files via argv
-	// Insufficent args, default file paths uses
+	// Insufficient args, default file paths uses
 	if (argc < 3){
 		fprintf(stderr, "Insufficient args. Using default input and output.\n");
 		input = fopen("source.tb", "r");
@@ -267,9 +267,6 @@ int main(int argc, char **argv){
 	if (success) {
 		fprintf(info, "Compiled successfully.\n");
 		return 0;
-	}
-	else {
-		return 1;
 	}
 }
 
