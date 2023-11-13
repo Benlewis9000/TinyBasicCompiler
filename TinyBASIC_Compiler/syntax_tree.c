@@ -87,7 +87,7 @@ NodeWrapper* n_var(SymTable* table, char* id){
 	NodeWrapper* node = n_create();
 	node->type = NodeVar;
 
-	// If symbol of same ID exists, copy raw value TODO removed because this assumes user as assigning same type to the var, not garuanteed H: <- that assumes user is even assigning
+	// If symbol of same ID exists, copy raw value TODO removed because this assumes user as assigning same type to the var, not guaranteed H: <- that assumes user is even assigning
 	Symbol* existing = symtbl_get(table, id);
 	if (existing) node->raw = existing->node->raw;
 	else node->raw = RawUnknown;
