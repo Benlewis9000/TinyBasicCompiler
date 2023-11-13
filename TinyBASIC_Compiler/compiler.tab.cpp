@@ -1482,7 +1482,7 @@ yyreduce:
   case 6: /* line: INTEGER statement CR  */
 #line 123 "compiler.y"
                                                 {
-									 trans(out, table, (yyvsp[-1].node), (yyvsp[-2].integer)); n_free((yyvsp[-1].node));
+									 trans(out, table, (yyvsp[-1].node), (yyvsp[-2].integer));
 									}
 #line 1488 "compiler.tab.cpp"
     break;
@@ -1490,7 +1490,7 @@ yyreduce:
   case 7: /* line: statement CR  */
 #line 126 "compiler.y"
                                                         { 
-									 trans(out, table, (yyvsp[-1].node), -1);	n_free((yyvsp[-1].node));
+									 trans(out, table, (yyvsp[-1].node), -1);
 									}
 #line 1496 "compiler.tab.cpp"
     break;

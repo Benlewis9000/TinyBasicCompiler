@@ -121,10 +121,10 @@ line_list:
 
 line:
 	INTEGER statement CR			{
-									 trans(out, table, $2, $1); n_free($2);
+									 trans(out, table, $2, $1);
 									}
 	| statement CR					{ 
-									 trans(out, table, $1, -1);	n_free($1);
+									 trans(out, table, $1, -1);
 									}
 	| CR							{}
 	;
