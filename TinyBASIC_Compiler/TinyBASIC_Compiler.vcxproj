@@ -42,7 +42,12 @@
     <ClInclude Include="syntax_tree.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\WinFlexBison\win_flex_bison_custom_build.props" />
+    <None Include="..\WinFlexBison\win_flex_bison_custom_build.targets" />
     <None Include="source.tb" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\WinFlexBison\win_flex_bison_custom_build.xml" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -84,7 +89,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
-    <Import Project="D:\Downloads\win_flex_bison3-latest\custom_build_rules\win_flex_bison\win_flex_bison_custom_build.props" />
+    <Import Project="..\WinFlexBison\win_flex_bison_custom_build.props" />
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
@@ -211,6 +216,6 @@
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="D:\Downloads\win_flex_bison3-latest\custom_build_rules\win_flex_bison\win_flex_bison_custom_build.targets" />
+    <Import Project="..\WinFlexBison\win_flex_bison_custom_build.targets" />
   </ImportGroup>
 </Project>
